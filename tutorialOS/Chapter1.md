@@ -24,11 +24,15 @@ modern computers have motherboards with a environment typically with:
 - section is a block of memory that conatains program code or data
 - data sections such as .data and .bss, debug sections, etc, are not displayed
 ```bash
-$ objdump -M i386,intel -D hello
+$ objdump -z -M i386,intel -D hello
   # options: -d | displays assembled contents of executable sections 
   #          -D | displays assembly contents of all sections
   #          -M intel | change the assembly into Intel syntax
   #          -M i386 | display aseembly content using 32-bit layout
+  #          -z | to show all zer bytes
+  #          -S | to better demonstrate the connection between high and low level code
+  #          --no-show-raw-insn | omit the opcodes (hex representation of the code)
+  
 ```
 - `nasm`stands for Netwide Assembler, and is a prgroam that assembly machine code into binary
 ```bash
@@ -39,5 +43,88 @@ $ nasm -f bin test.asm -o test
 ```bash
 $ hd test
 ```
+- `readelf`
+```bash
+$ readelf -S hello
+  # options: -S | get all the headers from an executable binary
+```
 
-### 
+<br/>
+
+### Assembly Instructions
+|Instruction Prefiexes | opcode |ModR/M |SIB    | Displacemet   | Immediate|
+|---|---|---|---|---|---|
+|Prefixes of 1 byteach (optional)|1-, 2-, or 3- byte opcode| 1 byte (if required)| 1 byte (if required)  | Address displacement of 1, 2 or 4 bytesor none| Immediate data of 1, 2 or 4 bytes or none|
+##### ModR/M
+|Mod    | Reg/Opcode|    R/M|
+|---|---|---|
+##### SIB
+|Scale  | Index     | Base|
+|---|---|---|
+
+- `opcode` is a unique number thatidentifies an instruction, each for a mnemonic name, ex. add is 04
+  - they can be 1, 2 or 3 bytes long and sometimes includes an additional 3-bit MODR/M
+- `ModR/M` specifies operands of an instruction, can be: register, memory location or an immediate value.
+  - `mod`(modifier) field, with r/m field for 5 bits of information to encode 32 possible values: 8 registers and 24 addressing modes.
+  - `reg/opcode` field encodes either a register operand, or extends the Opcode field with 3 more bits
+  - `r/m` field encodes either a *register operand* or can be combined with mod field to *encode an addressing mode*
+- reread p.58-61
+- `SIB` byte encodes ways to calculate the memory position into an element of an array. 
+  - Effective address = scale*index+base
+    - index is the offset into an **array**
+    - Scale is a factor of Index. Scale can only be 1, 2, 4 or 8; other musts be done manually
+    - Base is the starting address
+    - `mul` instructions can loop through array with a `n` variable
+
+### Anatomy of a Program
+- **ELF**, stands for Executable and Linkable Format, is the content at the very geinning of an executable to provide an operating system necessary information to load into main memory and run the executable.
+- ELF binary structure
+  1. **ELF header**: the very first section of an executable that describes the file's organization
+  2. **Program header table**: an array of fixed-size structures that describes *segments* of an executable
+  3. **Section header table**: an array of fixed-size structures that describes *sections* of an executable
+  4. **Segments and sections**: the main content of an ELF binary, which are the code and data, divided into chunks of different purposes
+     - A *segment* is a composition of zero or more sections and is directly loaded by an operating system at runtime
+     - A *section* is a block of binary that is either:
+       - actual program code and data that is available in memory when a program runs
+       - metadata about othersections used only in the linking process, and dixsappear from the final executable
+- the *linker script* is a text file to instruct how a linker should generate a binary
+<br/>
+
+### ELF Program Header
+- `Magic` 16 bytes that identifies file as ELF executable
+
+|Predefined Values|Class field|Data field| Version| OS/ABI| Padding |
+|---|---|---|---|---|---|
+|7f 45 4c 46<br/>Mean: 7f ELF|0 - Invalid class<br/>1 - 32-bit objects<br/>2 - 64-bit objects|0 - Invalid Data encoding<br/>1 - Little endian, 2' complement<br/>2 - Big endian, 2's complement|0 - Invalid version<br/>1 - Current version|target OS # for ABI|
+
+- `Type` identifies the object file type<br/>&emsp;0 - No file type<br/>&emsp;1 - Relocatable file<br/>&emsp;2 - Executable file<br/>&emsp;3 - Shared object file<br/>&emsp;4 - Core file<br/>&emsp;9xff00 - Processor specific, lower bound<br/>&emsp;0xffff - Processor specific, upper bound
+- `Machine` required architecture value for an ELF file eg. x86_64, MIPS, SPARC, etc. 
+- `Version` the version number fo the current object file (not ELF version)
+- `Entry point address` where the very frist code to be executed
+- `Start of program headers` Offset of the program header table, in bytes. $<$start address$>$ + offset
+- `Start of section headers` Offset of the section header table, in bytes.
+- `Flags` Hold Processor-specific flags associated with the file. EFLAGS register is set according to this value.
+- `Size of this header` The total size oef ELF header's size in bytes.
+- `Size of program headers` Size of each program header
+- `Number of program headers` The total number of program headers
+- `Size of section headers` Size of each section header
+- `Number of section headers` The total number of section headers
+- `Section header string table index` Specifies the index of section header table that points to the section that holds all null-terminated strings.
+
+### Section header table
+- because not all types of code and data have the same purpose, they are divided into smaller chunks. w/ conditions:
+  - Every section in an objectfile has exactly one section header describing it. But, section headers may exist that do not have a section. 
+  - Each section occupies one contiguous (possibly empty) sequence of bytes within a file.
+  - Sections in a file may not overlap
+  - An object file may have inactive space. Contents can be neither section nor program (*inactive space*)
+  
+| | | | | | | |
+|---|---|---|---|---|---|---|
+|[Nr] (index)|Name|Type|Address |||Offset|
+| |Size |EntSize| [Flags](./Appendix.md#Section-Header-Flags-Definitions)| Link|Info|Align|
+
+
+<br/>
+
+### Assembly Examples
+- `jump [0x1234]` -> `ff 26 34 12`
