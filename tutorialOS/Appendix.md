@@ -17,3 +17,14 @@
 |O|Sections requires special OS-specific linking processing to avoid incorrect behavior|
 |o|All bits included inthis flag are reserved for operating system-specific semantics|
 |p|All bits included in this flag are reserved for processor-specific semantics|
+
+### Program Header Types
+|Type|Description|
+|---|---|
+|PHDR|specifies the location and size of the program header table itself|
+|INTERP|specifies the location and size of a null-terminated path name to invoke as an interpreter for linking runtime libraries|
+|LOAD|specifies a loadable segment|
+|DYNAMIC|specifies dynamic linking information|
+|NOTE|specifies the location and size of auxiliary information|
+|TLS|specifies the *Thread-Local Storage template*, which is formed from the combination fo all sections with the falg TLS|
+|GNU_STACK|indicates whether the program's stack should be made executable or note|

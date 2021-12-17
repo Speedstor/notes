@@ -47,6 +47,23 @@ $ hd test
 ```bash
 $ readelf -S hello
   # options: -S | get all the headers from an executable binary
+  #          -x <section name|section number> | display a certion section hexdump
+  #          -p <section name|section number> | display a certain section strings
+  #          -s | display symbol tables
+  #          -l | display program header table
+  #          -w | prints all debug information
+  #          -L | used with -w, it will only display the debug info of line numbers
+  #          -i | used with -w, it will only display the debug info of DIEs entries
+```
+- `gcc`
+```bash
+$ gcc -masm=intel -m32 -g hello.c -o hello
+ # options: -g | compile with debug information
+```
+- `gdb` debug for c and c++ programs
+```bash
+$ gdb hello
+ # options: 
 ```
 
 <br/>
@@ -121,10 +138,107 @@ $ readelf -S hello
 | | | | | | | |
 |---|---|---|---|---|---|---|
 |[Nr] (index)|Name|Type|Address |||Offset|
-| |Size |EntSize| [Flags](./Appendix.md#Section-Header-Flags-Definitions)| Link|Info|Align|
+| |Size |EntSize| [Flags](./Appendix.md#section-header-flags-definitions)| Link|Info|Align|
 
+### Important Sections types 
+- `.text` holds all the compiled code of a program
+- `.data` holds the initialized data of a program
+- `.rodata` holds read-only data, such as fixed-size strings in a program
+- `.bss` shorts for Block Started by Symbol, holds uninitialized data of a program (allocated only when loaded into main memory)
+- other types of sections are needed for dynamic linking, not there yet we
+- `SYMTAB` and `DYNSYM` are sections that hold symbol table. *symbol table* is an array of entries that describe symbols in a program. *symbol* is a name assigned to an entity of program
+  - symbols definitions of *visibility* and *index* on book page 129
+- `STRTAB` holds null-terminated strings, called string table
+
+### Program Header Table
+- A *program header table* is an array of program headers that defines the memeory layout of a aprogram at runtime.
+- [Program header types](./Appendix.md#program-header-types)
+
+
+### Segments vs sections
+- an OS loads program segments, not sections
+- a segment is a collection of sections, sections has more types and more variaty
 
 <br/>
 
 ### Assembly Examples
 - `jump [0x1234]` -> `ff 26 34 12`
+<br/>
+
+### gdb Usage
+```bash
+(gdb) info target
+ # display symbols of the file
+
+(gdb) maint info sections <section names/flags (ex. .text .data .bss CODE)>
+ # similar to info target but give more info about sections (file offset, flags...)
+ #    section flags are specific to gdb
+
+(gdb) info functions
+ # list all function names and their loaded address
+
+(gdb) info variables
+ # list all global and static variable names
+
+(gdb) info registers
+ # list commonly used registers
+
+(gdb) disassemble /rs main
+(gdb) disassemble /rs 'hello.c'::main
+ # displays the assembly code of the executable file (here, the main function)
+ #    /s includes high-level code source
+ #    /r raw instructions in hex are included
+
+(gdb) x/20b main
+ # examines the content of a given memory range
+ #    /20b prints 20 bytes, starting from main -> /<repeated count><format letter>
+ #    <x> main, x could be any of: o (octal)/ x (hex)/ d (decimal)/ u (unsigned decimal)/ 
+ #                                 t (binary) / f (float)/ a (memory addresses)/ 
+ #                                 i (series of assembly instructions)/ c (array of ASCII chars)/
+ #                                 s (string)
+
+(gdb) print <variable, function, register, number, etc>
+
+(gdb) run
+(gdb) r
+ # runs the program
+
+(gdb) break 3
+(gdb) b 3
+ # set breakpoint at line 3
+(gdb) b main
+ # set breakpoint at main function
+(gdb) b *0x400526
+(gdb) b hello.c:3
+ # set breakpoint at line 3 of file of hello.c
+
+(gdb) next
+(gdb) n
+ # proceeds to the next statement in the program
+
+(gdb) step
+(gdb) s
+ # steps into a funciton
+
+(gdb) ni
+ # steps through each assembly instruction
+
+(gdb) x/i $eip
+ # displays the current instruction in breakpoint
+
+(gdb) si
+ # steps into an assembly function
+
+(gdb) until
+(gdb) finish
+
+(gdb) bt
+ # prints the backtrace of all stack frames (list of currently active functions)
+
+(gdb) up
+(gdb) down
+ # goes up/down one frame earlier/later the current frame
+```
+
+### Linginering questions too lazy to know
+- what is `-m32` option in gcc command program
