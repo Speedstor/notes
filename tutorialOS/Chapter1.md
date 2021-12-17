@@ -1,5 +1,23 @@
-# Preliminary
+- [Preliminary](#preliminary)
+    - [Different computer architecture](#different-computer-architecture)
+    - [unix commands for writing os](#unix-commands-for-writing-os)
+    - [Assembly Instructions](#assembly-instructions)
+        - [ModR/M](#modrm)
+        - [SIB](#sib)
+    - [Anatomy of a Program](#anatomy-of-a-program)
+    - [ELF Program Header](#elf-program-header)
+    - [Section header table](#section-header-table)
+    - [Important Sections types](#important-sections-types)
+    - [Program Header Table](#program-header-table)
+    - [Segments vs sections](#segments-vs-sections)
+    - [Assembly Examples](#assembly-examples)
+    - [gdb Usage](#gdb-usage)
+    - [Linginering questions too lazy to know](#linginering-questions-too-lazy-to-know)
+<br/>
+<br/>
+<br/>
 
+# Preliminary
 ### Different computer architecture
 <!--
 ##### x86 architecture
