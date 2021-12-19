@@ -1,4 +1,4 @@
-- [Preliminary](#preliminary)
+- [Chapter 1: Preliminary](#chapter-1-preliminary)
     - [Different computer architecture](#different-computer-architecture)
     - [unix commands for writing os](#unix-commands-for-writing-os)
     - [Assembly Instructions](#assembly-instructions)
@@ -17,7 +17,7 @@
 <br/>
 <br/>
 
-# Preliminary
+# Chapter 1: Preliminary
 ### Different computer architecture
 <!--
 ##### x86 architecture
