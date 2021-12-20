@@ -234,6 +234,10 @@ $ gdb hello
 (gdb) n
  # proceeds to the next statement in the program
 
+(gdb) countinue
+(gdb) c
+ # continue execution up to the next breakpoint or until termination
+
 (gdb) step
 (gdb) s
  # steps into a funciton
