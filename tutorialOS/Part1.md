@@ -236,7 +236,7 @@ $ gdb hello
 
 (gdb) countinue
 (gdb) c
- # continue execution up to the next breakpoint or until termination
+ # continue execution up to the next breakpoint or until terminationqweqweqweqwe
 
 (gdb) step
 (gdb) s
