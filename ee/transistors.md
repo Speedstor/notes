@@ -42,6 +42,8 @@
 - BJT Transistors
 - JFET Transistors
 
+- s9014 - NPN
+
 <br/>
 
 #### Usages for Transistors
