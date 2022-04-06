@@ -27,6 +27,16 @@
 - `I` - INSERT at the start of line after blanks
 - `a` - INSERT after the character
 
+#### Windows
+- To change two vertically split windows to horizonally split
+  - Ctrl-w t Ctrl-w K
+- Horizontally to vertically:
+  - Ctrl-w t Ctrl-w H
+- Explanations:
+  - Ctrl-w t makes the first (topleft) window current
+  - Ctrl-w K moves the current window to full-width at the very top
+  - Ctrl-w H moves the current window to full-height at far left
+
 #### skips in the same line
 - `f<character>` **- skip** to the next chracter after the cursor
 - `F<character>` - skip to the last character before the cursor
@@ -93,3 +103,6 @@
 
 #### regex search and replace
 *still need to learn*
+
+#### website cheatsheet by some other people
+- (https://vim.rtorr.com/)[https://vim.rtorr.com/]
